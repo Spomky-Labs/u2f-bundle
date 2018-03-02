@@ -1,0 +1,3 @@
+u2f_endpoint:
+    resource: "@U2FAuthenticationBundle/Resources/config/routing/endpoints.yml"
+    prefix: '/2fa/u2f'

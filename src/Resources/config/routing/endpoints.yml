@@ -1,0 +1,19 @@
+u2f_endpoint_register_get:
+    path:       '/register'
+    methods:    'GET'
+    controller: 'U2FAuthentication\Bundle\Controller\RegistrationController::getRegistrationRequestAction'
+
+u2f_endpoint_register_post:
+    path:       '/register'
+    methods:    'POST'
+    controller: 'U2FAuthentication\Bundle\Controller\RegistrationController::postRegistrationRequestAction'
+
+u2f_endpoint_sign_get:
+    path:       '/sign'
+    methods:    'GET'
+    controller: 'U2FAuthentication\Bundle\Controller\SignatureController::getSignatureRequestAction'
+
+u2f_endpoint_sign_post:
+    path:       '/sign'
+    methods:    'POST'
+    controller: 'U2FAuthentication\Bundle\Controller\SignatureController::postSignatureRequestAction'

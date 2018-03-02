@@ -1,0 +1,45 @@
+{
+    "name": "spomky-labs/u2f-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "description": "Symfony Bundle for FIDO U2F Support",
+    "keywords": ["FIDO", "U2F", "Symfony", "Bundle"],
+    "homepage": "https://github.com/Spomky-Labs/u2f-bundle",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },
+        {
+            "name": "All contributors",
+            "homepage": "https://github.com/Spomky-Labs/u2f-bundle/contributors"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "spomky-labs/u2f-php": "dev-master",
+        "symfony/http-foundation": "^3.4|^4.0",
+        "symfony/http-kernel": "^3.4|^4.0",
+        "symfony/dependency-injection": "^3.4|^4.0",
+        "symfony/config": "^3.4|^4.0",
+        "symfony/security-bundle": "^3.4|^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "phpstan/phpstan": "^0.9.2",
+        "satooshi/php-coveralls": "^2.0",
+        "symfony/browser-kit": "^3.4|^4.0",
+        "symfony/framework-bundle": "^3.4|^4.0",
+        "symfony/phpunit-bridge": "^3.4|^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "U2FAuthentication\\Bundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "U2FAuthentication\\Bundle\\Tests\\": "tests/"
+        }
+    }
+}

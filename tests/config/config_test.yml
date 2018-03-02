@@ -1,0 +1,18 @@
+imports:
+    - { resource: security.yml }
+
+framework:
+    test: ~
+    secret: 'test'
+    session:
+        storage_id: 'session.storage.mock_file'
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    fragments:       ~
+    http_method_override: true
+
+u2f:
+    application_id: 'https://twofactors:4043'
+    issuer_certificates:
+        - '%kernel.root_dir%/certificates/yubico.crt'
