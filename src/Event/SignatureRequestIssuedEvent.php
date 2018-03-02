@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace U2FAuthentication\Bundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
@@ -21,8 +30,8 @@ class SignatureRequestIssuedEvent extends Event
     /**
      * SignatureRequestIssuedEvent constructor.
      *
-     * @param HasRegisteredKeys    $user
-     * @param SignatureRequest $signatureRequest
+     * @param HasRegisteredKeys $user
+     * @param SignatureRequest  $signatureRequest
      */
     public function __construct(HasRegisteredKeys $user, SignatureRequest $signatureRequest)
     {

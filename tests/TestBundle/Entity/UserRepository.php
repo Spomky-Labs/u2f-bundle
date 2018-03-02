@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2018 Spomky-Labs
+ * Copyright (c) 2018 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -37,9 +37,6 @@ class UserRepository
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function findOneByUsername(string $username): ?User
     {
         return array_key_exists($username, $this->users) ? $this->users[$username] : null;
@@ -52,7 +49,7 @@ class UserRepository
     {
         return [
             [
-                'username' => 'john.1',
+                'username'        => 'john.1',
                 'registered_keys' => [
                     RegisteredKey::create(
                         'U2F_V2',
@@ -62,7 +59,7 @@ class UserRepository
                         'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEV5aWVKiV7Hx2IezAodbrPsqa2szK'.PHP_EOL.
                         'kyco1l6HANI/1E+fcZsx4H9ZpE/Q6/NpxrWD19/ej61EMeP+eIWk2aPIOg=='.PHP_EOL.
                         '-----END PUBLIC KEY-----'.PHP_EOL
-                    )
+                    ),
                 ],
                 'key_counters' => [
                     'Ws1pyRaocwNNxYIXIHttjOO1628kVQ2EK6EVVZ_wWKs089-rszT2fkSnSfm4V6wV9ryz2-K8Vm5Fs_r7ctAcoQ' => 180,
