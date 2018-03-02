@@ -104,7 +104,7 @@ class SignatureController
 
         if (!$signatureResponse->isValid($signatureRequest, $counter)) {
             $this->eventDispatcher->dispatch(
-                Events::U2F_REGISTRATION_RESPONSE_INVALID,
+                Events::U2F_SIGNATURE_RESPONSE_INVALID,
                 new SignatureResponseInvalidEvent($user, $signatureResponse)
             );
 
@@ -112,7 +112,7 @@ class SignatureController
         }
 
         $this->eventDispatcher->dispatch(
-            Events::U2F_REGISTRATION_RESPONSE_VALIDATED,
+            Events::U2F_SIGNATURE_RESPONSE_VALIDATED,
             new SignatureResponseValidatedEvent($user, $signatureResponse)
         );
 
