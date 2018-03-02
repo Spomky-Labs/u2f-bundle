@@ -102,11 +102,7 @@ class SignatureController
     public function postSignatureRequestAction(Request $request): Response
     {
         $user = $this->getUser();
-        $data = $request->getContent();
-        if (!is_string($data)) {
-            throw new HttpException(400, 'The challenge response is missing');
-        }
-
+        $data = json_encode($request->request->all());
         $signatureRequest = $this->session->get('U2F_SIGNATURE_REQUEST');
         if (!$signatureRequest instanceof SignatureRequest) {
             throw new HttpException(400, 'The signature request is missing');

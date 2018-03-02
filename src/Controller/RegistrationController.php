@@ -91,11 +91,7 @@ class RegistrationController
      */
     public function postRegistrationRequestAction(Request $request): Response
     {
-        $data = $request->getContent();
-        if (!is_string($data)) {
-            throw new HttpException(400, 'The challenge response is missing');
-        }
-
+        $data = json_encode($request->request->all());
         $registrationRequest = $this->session->get('U2F_REGISTRATION_REQUEST');
         if (!$registrationRequest instanceof RegistrationRequest) {
             throw new HttpException(400, 'The registration request is missing');
