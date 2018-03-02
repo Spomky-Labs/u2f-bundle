@@ -13,5 +13,6 @@ security:
         main:
             pattern: '^/'
             anonymous: ~
+            logout_on_user_change: true
             http_basic:
                 realm: "My security system"
