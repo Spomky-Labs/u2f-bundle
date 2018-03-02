@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace U2FAuthentication\Bundle\Tests\Functional;
 
-use Base64Url\Base64Url;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use U2FAuthentication\RegistrationRequest;
 
 /**
  * @group Bundle

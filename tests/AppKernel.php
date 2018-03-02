@@ -17,8 +17,8 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use U2FAuthentication\Bundle\U2FAuthenticationBundle;
 use U2FAuthentication\Bundle\Tests\TestBundle\TestBundle;
+use U2FAuthentication\Bundle\U2FAuthenticationBundle;
 
 /**
  * Class AppKernel.

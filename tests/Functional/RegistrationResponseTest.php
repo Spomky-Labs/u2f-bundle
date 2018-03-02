@@ -17,7 +17,6 @@ use Base64Url\Base64Url;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use U2FAuthentication\RegistrationRequest;
-use U2FAuthentication\RegistrationResponse;
 
 /**
  * @group Bundle

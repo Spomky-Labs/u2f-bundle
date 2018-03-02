@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace U2FAuthentication\Bundle\Controller;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -100,8 +109,9 @@ class RegistrationController
                 Events::U2F_REGISTRATION_RESPONSE_INVALID,
                 new RegistrationResponseInvalidEvent($registrationResponse)
             );
+
             throw new HttpException(400, 'The registration response is invalid');
-        };
+        }
 
         $this->eventDispatcher->dispatch(
             Events::U2F_REGISTRATION_RESPONSE_VALIDATED,
