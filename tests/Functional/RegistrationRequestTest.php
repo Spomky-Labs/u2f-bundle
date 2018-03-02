@@ -29,7 +29,7 @@ class RegistrationRequestTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/2fa/u2f/register', [], [], ['HTTPS' => 'on']);
+        $client->request('GET', '/2fa/u2f/register', [], [], ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Basic '.base64_encode('john.1:secret')]);
         $response = $client->getResponse();
 
         self::assertEquals(200, $response->getStatusCode());

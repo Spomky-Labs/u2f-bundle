@@ -14,11 +14,14 @@ namespace U2FAuthentication\Bundle\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use U2FAuthentication\Bundle\Event\Events;
 use U2FAuthentication\Bundle\Event\RegistrationRequestIssuedEvent;
 use U2FAuthentication\Bundle\Event\RegistrationResponseInvalidEvent;
 use U2FAuthentication\Bundle\Event\RegistrationResponseValidatedEvent;
+use U2FAuthentication\Bundle\Model\HasRegisteredKeys;
 use U2FAuthentication\RegistrationRequest;
 use U2FAuthentication\RegistrationResponse;
 
@@ -28,6 +31,11 @@ class RegistrationController
      * @var string
      */
     private $applicationId;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
 
     /**
      * @var array
@@ -40,15 +48,16 @@ class RegistrationController
     private $eventDispatcher;
 
     /**
-     * RegistrationRequestController constructor.
-     *
+     * RegistrationController constructor.
      * @param EventDispatcherInterface $eventDispatcher
+     * @param TokenStorageInterface    $tokenStorage
      * @param string                   $applicationId
      * @param array                    $issuerCertificates
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, string $applicationId, array $issuerCertificates)
+    public function __construct(EventDispatcherInterface $eventDispatcher, TokenStorageInterface $tokenStorage, string $applicationId, array $issuerCertificates)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->tokenStorage = $tokenStorage;
         $this->applicationId = $applicationId;
         $this->issuerCertificates = $issuerCertificates;
     }
@@ -60,12 +69,13 @@ class RegistrationController
      */
     public function getRegistrationRequestAction(Request $request): JsonResponse
     {
+        $user = $this->getUser();
         try {
             $registrationRequest = RegistrationRequest::create($this->applicationId);
             $request->getSession()->set('U2F_REGISTRATION_REQUEST', $registrationRequest);
             $this->eventDispatcher->dispatch(
                 Events::U2F_REGISTRATION_REQUEST_ISSUED,
-                new RegistrationRequestIssuedEvent($registrationRequest)
+                new RegistrationRequestIssuedEvent($user, $registrationRequest)
             );
 
             return new JsonResponse($registrationRequest);
@@ -81,6 +91,7 @@ class RegistrationController
      */
     public function postRegistrationRequestAction(Request $request): JsonResponse
     {
+        $user = $this->getUser();
         $registrationRequest = $request->getSession()->get('U2F_REGISTRATION_REQUEST');
         if (!$registrationRequest instanceof RegistrationRequest) {
             throw new HttpException(400, 'The registration request is missing');
@@ -93,7 +104,7 @@ class RegistrationController
         if (!$registrationResponse->isValid($registrationRequest, $this->issuerCertificates)) {
             $this->eventDispatcher->dispatch(
                 Events::U2F_REGISTRATION_RESPONSE_INVALID,
-                new RegistrationResponseInvalidEvent($registrationResponse)
+                new RegistrationResponseInvalidEvent($user, $registrationResponse)
             );
 
             throw new HttpException(400, 'The registration response is invalid');
@@ -101,9 +112,29 @@ class RegistrationController
 
         $this->eventDispatcher->dispatch(
             Events::U2F_REGISTRATION_RESPONSE_VALIDATED,
-            new RegistrationResponseValidatedEvent($registrationResponse)
+            new RegistrationResponseValidatedEvent($user, $registrationResponse)
         );
 
         return new JsonResponse(['registered' => 'ok'], 204);
+    }
+
+    /**
+     * @return HasRegisteredKeys
+     */
+    private function getUser(): HasRegisteredKeys
+    {
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new AccessDeniedHttpException('The user must be connected');
+        }
+        $user = $token->getUser();
+        if (null === $user) {
+            throw new AccessDeniedHttpException('The user must be connected');
+        }
+        if (!$user instanceof HasRegisteredKeys) {
+            throw new AccessDeniedHttpException('The user does not support the U2F keys');
+        }
+
+        return $user;
     }
 }

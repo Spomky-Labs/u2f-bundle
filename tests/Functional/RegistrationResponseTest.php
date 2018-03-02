@@ -49,7 +49,7 @@ class RegistrationResponseTest extends WebTestCase
                 'clientData'       => 'eyJ0eXAiOiJuYXZpZ2F0b3IuaWQuZmluaXNoRW5yb2xsbWVudCIsImNoYWxsZW5nZSI6IjNscDNsY3VZU0hvM3lyR2Z1THZRNU5FZC1MV0RUSFJWYURJS1hmQnZoOHMiLCJvcmlnaW4iOiJodHRwczovL3R3b2ZhY3RvcnM6NDA0MyIsImNpZF9wdWJrZXkiOiJ1bnVzZWQifQ',
             ],
             [],
-            ['HTTPS' => 'on']
+            ['HTTPS' => 'on', 'HTTP_AUTHORIZATION' => 'Basic '.base64_encode('john.1:secret')]
         );
         $response = $client->getResponse();
 

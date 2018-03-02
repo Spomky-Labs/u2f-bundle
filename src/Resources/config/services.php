@@ -25,6 +25,7 @@ return function (ContainerConfigurator $container) {
     $container->set(RegistrationController::class)
         ->args([
             ref('event_dispatcher'),
+            ref('security.token_storage'),
             '%u2f.application_id%',
             '%u2f.issuer_certificates%',
         ])
