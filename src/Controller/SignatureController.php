@@ -103,7 +103,7 @@ class SignatureController
     {
         $user = $this->getUser();
         $data = $request->getContent();
-        if (null === $data) {
+        if (!is_string($data)) {
             throw new HttpException(400, 'The challenge response is missing');
         }
 

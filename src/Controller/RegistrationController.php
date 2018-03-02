@@ -92,7 +92,7 @@ class RegistrationController
     public function postRegistrationRequestAction(Request $request): Response
     {
         $data = $request->getContent();
-        if (null === $data) {
+        if (!is_string($data)) {
             throw new HttpException(400, 'The challenge response is missing');
         }
 
