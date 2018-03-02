@@ -49,6 +49,7 @@ class RegistrationController
 
     /**
      * RegistrationController constructor.
+     *
      * @param EventDispatcherInterface $eventDispatcher
      * @param TokenStorageInterface    $tokenStorage
      * @param string                   $applicationId
@@ -70,6 +71,7 @@ class RegistrationController
     public function getRegistrationRequestAction(Request $request): JsonResponse
     {
         $user = $this->getUser();
+
         try {
             $registrationRequest = RegistrationRequest::create($this->applicationId);
             $request->getSession()->set('U2F_REGISTRATION_REQUEST', $registrationRequest);
