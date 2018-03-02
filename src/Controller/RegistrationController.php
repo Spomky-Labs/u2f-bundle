@@ -12,8 +12,8 @@
 namespace U2FAuthentication\Bundle\Controller;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use U2FAuthentication\Bundle\Event\Events;
 use U2FAuthentication\Bundle\Event\RegistrationRequestIssuedEvent;
@@ -56,9 +56,9 @@ class RegistrationController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function getRegistrationRequestAction(Request $request): Response
+    public function getRegistrationRequestAction(Request $request): JsonResponse
     {
         try {
             $registrationRequest = RegistrationRequest::create($this->applicationId);
@@ -68,11 +68,7 @@ class RegistrationController
                 new RegistrationRequestIssuedEvent($registrationRequest)
             );
 
-            return new Response(
-                json_encode($registrationRequest, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                200,
-                ['Content-Type' => 'application/json']
-            );
+            return new JsonResponse($registrationRequest);
         } catch (\Exception $e) {
             throw new HttpException(500, 'An error occurred during the creation of the registration request.', $e);
         }
@@ -81,9 +77,9 @@ class RegistrationController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function postRegistrationRequestAction(Request $request): Response
+    public function postRegistrationRequestAction(Request $request): JsonResponse
     {
         $registrationRequest = $request->getSession()->get('U2F_REGISTRATION_REQUEST');
         if (!$registrationRequest instanceof RegistrationRequest) {
@@ -108,6 +104,6 @@ class RegistrationController
             new RegistrationResponseValidatedEvent($registrationResponse)
         );
 
-        return new Response('', 204);
+        return new JsonResponse(['registered' => 'ok'], 204);
     }
 }

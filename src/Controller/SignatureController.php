@@ -12,8 +12,8 @@
 namespace U2FAuthentication\Bundle\Controller;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -61,9 +61,9 @@ class SignatureController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function getSignatureRequestAction(Request $request): Response
+    public function getSignatureRequestAction(Request $request): JsonResponse
     {
         $user = $this->getUser();
 
@@ -78,11 +78,7 @@ class SignatureController
                 new SignatureRequestIssuedEvent($user, $signatureRequest)
             );
 
-            return new Response(
-                json_encode($signatureRequest, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                200,
-                ['Content-Type' => 'application/json']
-            );
+            return new JsonResponse($signatureRequest);
         } catch (\Exception $e) {
             throw new HttpException(500, 'An error occurred during the creation of the signature request.', $e);
         }
@@ -91,9 +87,9 @@ class SignatureController
     /**
      * @param Request $request
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function postSignatureRequestAction(Request $request): Response
+    public function postSignatureRequestAction(Request $request): JsonResponse
     {
         $user = $this->getUser();
         $signatureRequest = $request->getSession()->get('U2F_SIGNATURE_REQUEST');
@@ -120,7 +116,7 @@ class SignatureController
             new SignatureResponseValidatedEvent($user, $signatureResponse)
         );
 
-        return new Response('', 204);
+        return new JsonResponse(['signature' => 'ok'], 204);
     }
 
     /**
