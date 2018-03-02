@@ -25,7 +25,6 @@ return function (ContainerConfigurator $container) {
     $container->set(RegistrationController::class)
         ->args([
             ref('event_dispatcher'),
-            ref('session'),
             '%u2f.application_id%',
             '%u2f.issuer_certificates%',
         ])
@@ -34,7 +33,6 @@ return function (ContainerConfigurator $container) {
     $container->set(SignatureController::class)
         ->args([
             ref('event_dispatcher'),
-            ref('session'),
             '%u2f.application_id%',
             ref('security.token_storage'),
         ])

@@ -14,7 +14,6 @@ namespace U2FAuthentication\Bundle\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -36,11 +35,6 @@ class SignatureController
     private $applicationId;
 
     /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
@@ -54,22 +48,22 @@ class SignatureController
      * SignatureRequestController constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionInterface         $session
      * @param string                   $applicationId
      * @param TokenStorageInterface    $tokenStorage
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, SessionInterface $session, string $applicationId, TokenStorageInterface $tokenStorage)
+    public function __construct(EventDispatcherInterface $eventDispatcher, string $applicationId, TokenStorageInterface $tokenStorage)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->session = $session;
         $this->applicationId = $applicationId;
         $this->tokenStorage = $tokenStorage;
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      */
-    public function getSignatureRequestAction(): Response
+    public function getSignatureRequestAction(Request $request): Response
     {
         $user = $this->getUser();
 
@@ -78,7 +72,7 @@ class SignatureController
                 $this->applicationId,
                 $user->getRegisteredKeys()
             );
-            $this->session->set('U2F_SIGNATURE_REQUEST', $signatureRequest);
+            $request->getSession()->set('U2F_SIGNATURE_REQUEST', $signatureRequest);
             $this->eventDispatcher->dispatch(
                 Events::U2F_SIGNATURE_REQUEST_ISSUED,
                 new SignatureRequestIssuedEvent($user, $signatureRequest)
@@ -102,13 +96,13 @@ class SignatureController
     public function postSignatureRequestAction(Request $request): Response
     {
         $user = $this->getUser();
-        $data = json_encode($request->request->all());
-        $signatureRequest = $this->session->get('U2F_SIGNATURE_REQUEST');
+        $signatureRequest = $request->getSession()->get('U2F_SIGNATURE_REQUEST');
         if (!$signatureRequest instanceof SignatureRequest) {
             throw new HttpException(400, 'The signature request is missing');
         }
-        $this->session->remove('U2F_SIGNATURE_REQUEST');
+        $request->getSession()->remove('U2F_SIGNATURE_REQUEST');
 
+        $data = $request->request->all();
         $signatureResponse = SignatureResponse::create($data);
         $counter = $this->getKeyCounter($signatureResponse->getKeyHandle(), $user);
 

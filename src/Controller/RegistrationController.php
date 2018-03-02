@@ -14,7 +14,6 @@ namespace U2FAuthentication\Bundle\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use U2FAuthentication\Bundle\Event\Events;
 use U2FAuthentication\Bundle\Event\RegistrationRequestIssuedEvent;
@@ -31,11 +30,6 @@ class RegistrationController
     private $applicationId;
 
     /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
      * @var array
      */
     private $issuerCertificates;
@@ -49,26 +43,26 @@ class RegistrationController
      * RegistrationRequestController constructor.
      *
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionInterface         $session
      * @param string                   $applicationId
      * @param array                    $issuerCertificates
      */
-    public function __construct(EventDispatcherInterface $eventDispatcher, SessionInterface $session, string $applicationId, array $issuerCertificates)
+    public function __construct(EventDispatcherInterface $eventDispatcher, string $applicationId, array $issuerCertificates)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->session = $session;
         $this->applicationId = $applicationId;
         $this->issuerCertificates = $issuerCertificates;
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      */
-    public function getRegistrationRequestAction(): Response
+    public function getRegistrationRequestAction(Request $request): Response
     {
         try {
             $registrationRequest = RegistrationRequest::create($this->applicationId);
-            $this->session->set('U2F_REGISTRATION_REQUEST', $registrationRequest);
+            $request->getSession()->set('U2F_REGISTRATION_REQUEST', $registrationRequest);
             $this->eventDispatcher->dispatch(
                 Events::U2F_REGISTRATION_REQUEST_ISSUED,
                 new RegistrationRequestIssuedEvent($registrationRequest)
@@ -91,13 +85,13 @@ class RegistrationController
      */
     public function postRegistrationRequestAction(Request $request): Response
     {
-        $data = json_encode($request->request->all());
-        $registrationRequest = $this->session->get('U2F_REGISTRATION_REQUEST');
+        $registrationRequest = $request->getSession()->get('U2F_REGISTRATION_REQUEST');
         if (!$registrationRequest instanceof RegistrationRequest) {
             throw new HttpException(400, 'The registration request is missing');
         }
-        $this->session->remove('U2F_REGISTRATION_REQUEST');
+        $request->getSession()->remove('U2F_REGISTRATION_REQUEST');
 
+        $data = $request->request->all();
         $registrationResponse = RegistrationResponse::create($data);
 
         if (!$registrationResponse->isValid($registrationRequest, $this->issuerCertificates)) {
