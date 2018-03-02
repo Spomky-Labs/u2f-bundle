@@ -102,7 +102,7 @@ class SignatureController
     public function postSignatureRequestAction(Request $request): Response
     {
         $user = $this->getUser();
-        $data = $request->request->get('data');
+        $data = $request->getContent();
         if (null === $data) {
             throw new HttpException(400, 'The challenge response is missing');
         }
