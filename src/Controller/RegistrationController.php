@@ -73,7 +73,7 @@ class RegistrationController
         $user = $this->getUser();
 
         try {
-            $registrationRequest = RegistrationRequest::create($this->applicationId);
+            $registrationRequest = RegistrationRequest::create($this->applicationId, $user->getRegisteredKeys());
             $request->getSession()->set('U2F_REGISTRATION_REQUEST', $registrationRequest);
             $this->eventDispatcher->dispatch(
                 Events::U2F_REGISTRATION_REQUEST_ISSUED,

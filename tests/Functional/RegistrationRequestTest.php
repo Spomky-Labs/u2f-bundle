@@ -35,12 +35,18 @@ class RegistrationRequestTest extends WebTestCase
         self::assertEquals(200, $response->getStatusCode());
         self::assertEquals('application/json', $response->headers->get('Content-Type'));
         $content = json_decode($response->getContent(), true);
+
         self::assertInternalType('array', $content);
-        self::assertArrayHasKey('version', $content);
-        self::assertEquals('U2F_V2', $content['version']);
-        self::assertArrayHasKey('challenge', $content);
         self::assertArrayHasKey('appId', $content);
         self::assertEquals('https://twofactors:4043', $content['appId']);
+
+        self::assertArrayHasKey('registerRequests', $content);
+        self::assertInternalType('array', $content['registerRequests']);
+        self::assertEquals(1, count($content['registerRequests']));
+
+        self::assertArrayHasKey('registeredKeys', $content);
+        self::assertInternalType('array', $content['registeredKeys']);
+        self::assertEquals(1, count($content['registeredKeys']));
 
         $container = $client->getContainer();
         /** @var SessionInterface $session */
