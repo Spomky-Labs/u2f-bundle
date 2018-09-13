@@ -41,5 +41,10 @@
         "psr-4": {
             "U2FAuthentication\\Bundle\\Tests\\": "tests/"
         }
-    }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+}
 }
