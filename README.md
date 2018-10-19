@@ -10,7 +10,7 @@ Symfony Bundle for FIDO U2F Support
 [![Latest Stable Version](https://poser.pugx.org/spomky-labs/u2f-bundle/v/stable.png)](https://packagist.org/packages/spomky-labs/u2f-bundle)
 [![Total Downloads](https://poser.pugx.org/spomky-labs/u2f-bundle/downloads.png)](https://packagist.org/packages/spomky-labs/u2f-bundle)
 [![Latest Unstable Version](https://poser.pugx.org/spomky-labs/u2f-bundle/v/unstable.png)](https://packagist.org/packages/spomky-labs/u2f-bundle)
-[![License](https://poser.pugx.org/spomky-labs/u2f-bundle/license.png)](https://packagist.org/packages/spomky-labs/u2f-bundle)
+[![License](https://poser.pugx.org/spomky-labs/u2f-bundle/license.png)](https://packagist.org/packages/spomky-labs/u2f-bundle) [![GuardRails badge](https://badges.production.guardrails.io/Spomky-Labs/u2f-bundle.svg)](https://www.guardrails.io)
 
 **FIDO U2F Support for PHP** is a **Symfony bundle** that will help you to support compatible security tokens.
 
